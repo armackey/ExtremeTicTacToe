@@ -22,7 +22,7 @@ export function isBoardFull(data: UserSelected): boolean {
 export function isMoveAllowed(data: UserSelected, previous_board: number): boolean {
   let bs = boards[data.board.toString()];
   if (previous_board === data.square && !bs) return false;
-  if (previous_board === data.square && bs.length !== 9) return false;
+  if (previous_board === data.square && bs.length !== 8) return false;
   return true;
 }
 
