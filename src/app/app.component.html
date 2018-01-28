@@ -2,7 +2,9 @@
 
 <div id="turn">
 
-  <span>It's {{ current_turn }} turn</span>
+  <span *ngIf="!hasWon">It's {{ current_turn }} turn</span>
+
+  <span *ngIf="hasWon">{{ player_has_won }}</span>
 
 </div>
 
