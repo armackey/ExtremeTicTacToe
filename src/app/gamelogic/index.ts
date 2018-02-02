@@ -1,3 +1,4 @@
+// this file shall remain platform agnostic
 var boards = {};
 
 interface UserSelected {
