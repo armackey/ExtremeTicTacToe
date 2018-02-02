@@ -22,18 +22,14 @@ body {text-align: center;}
   grid-template-columns: 1fr 1fr 1fr;
 }
 
-#header span, #footer span {
+/* #header span{
   font-size: 40px;
-}
-
-#footer span {
-  color: #cc2c2c;
 }
 
 #header, #footer {
   text-align: center;
   margin: 24px auto;
-}
+} */
 
 /* .grid span {
   margin: auto;
