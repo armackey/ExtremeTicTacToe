@@ -8,9 +8,10 @@ import { SharedService } from '../services/shared.service';
 })
 export class HeaderComponent implements OnInit {
 
-  turn: string;
+  header: string;
+  username: string;
   constructor(private sService: SharedService) {
-    this.sService.turnCast.subscribe(t => this.turn = t);
+    this.sService.headerCast.subscribe(r => { this.header = r['letter']; this.username = r['username']});
   }
 
   ngOnInit() {

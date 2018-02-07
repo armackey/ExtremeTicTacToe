@@ -1,6 +1,7 @@
-import { Component, ViewChildren, ViewChild, QueryList, ElementRef } from '@angular/core';
+import { Component, ViewChildren, ViewChild, QueryList, ElementRef, OnInit } from '@angular/core';
 import { SharedService } from './services/shared.service';
 import { addToTurnsList, hasWonBoard, hasWonGame, isBoardFull, isMoveAllowed, findAvailableBoards } from './gamelogic/';
+import { AuthService } from './services/auth.service';
 // import { ElementRef } from '@angular/core/src/linker/element_ref';
 
 @Component({
@@ -8,7 +9,7 @@ import { addToTurnsList, hasWonBoard, hasWonGame, isBoardFull, isMoveAllowed, fi
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   hasWon: boolean = false;
   current_turn: string;
@@ -18,28 +19,32 @@ export class AppComponent {
   rule: string;
   boards: Array<any> = [0,1,2,3,4,5,6,7,8];
 
-  constructor(private sService: SharedService) {
+  constructor(private sService: SharedService, public authService: AuthService) {
     // this.sService.turnCast.subscribe(t => this.current_turn = t);
   }
 
-  @ViewChild('parent') el: ElementRef;
-  addClass(elems: Array<any>): void {
-    elems.map(elem => {
-      elem.className = 'active';
-    });
+  ngOnInit() {
+    // this.authService.hasToken();
   }
 
-  removeClass(elems: Array<any>): void {
-    elems.map(elem => {
-      elem.className = '';
-    });
-  }
+  // @ViewChild('parent') el: ElementRef;
+  // addClass(elems: Array<any>): void {
+  //   elems.map(elem => {
+  //     elem.className = 'active';
+  //   });
+  // }
 
-  handleClick(data) {
-    var currGridSpans = Array.from(this.el.nativeElement.children[data.square].children[0].children);
-    var prevGridSpans = Array.from(this.el.nativeElement.children[data.board].children[0].children);
-    this.removeClass(prevGridSpans);
-    this.addClass(currGridSpans);
-  }
+  // removeClass(elems: Array<any>): void {
+  //   elems.map(elem => {
+  //     elem.className = '';
+  //   });
+  // }
+
+  // handleClick(data) {
+  //   var currGridSpans = Array.from(this.el.nativeElement.children[data.square].children[0].children);
+  //   var prevGridSpans = Array.from(this.el.nativeElement.children[data.board].children[0].children);
+  //   this.removeClass(prevGridSpans);
+  //   this.addClass(currGridSpans);
+  // }
 
 }

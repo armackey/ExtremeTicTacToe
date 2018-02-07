@@ -1,0 +1,23 @@
+<div class="container">
+  <div class="games-container">
+    <h2>Games</h2>
+    <div class="no-history" *ngIf="!games || games.length < 1">
+      No game history.
+    </div>
+    <ul>
+      <li class="game" *ngFor="let game of games" (click)="gameSelected(game)">
+        <div>{{ game.opponent.username }}</div>
+        <div *ngIf="game.status === 'waiting' ">{{ game.status }} on {{ game.turn === currentUser.uid ? 'you' : game.opponent.username }}</div>
+        <div *ngIf="game.status === 'game over' ">{{ game.status }}</div>
+      </li>
+    </ul>
+  </div>
+  <div class="users-container">
+    <h2>Challenge someone!</h2>
+    <ul>
+      <li *ngFor="let user of users" (click)="userSelected(user)">
+        {{ user.username }}
+      </li>
+    </ul>
+  </div>
+</div>

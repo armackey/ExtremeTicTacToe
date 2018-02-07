@@ -1,6 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { addToTurnsList, hasWonBoard, hasWonGame, isBoardFull, isMoveAllowed, findAvailableBoards } from '../gamelogic/';
+import { addToTurnsList, hasWonBoard, hasWonGame, isBoardFull, isMoveAllowed, findAvailableBoards, getBoards, setBoards } from '../gamelogic/';
 import { SharedService } from '../services/shared.service';
+import { AngularFireDatabase } from 'angularfire2/database';
+import { AuthService } from '../services/auth.service';
+import { Game } from '../interfaces/game';
 
 interface BoardNum {
   num: number
@@ -21,62 +24,76 @@ export class BoardComponent implements OnInit {
   expectedBoard: number;
   player_has_won: string;
   previousBoard: number;
+  conquered: string;
+  currentGame: Game;
 
-  constructor(private sService: SharedService) {
-    this.sService.turnCast.subscribe(t => this.current_turn = t);
+  constructor(private sService: SharedService, private db: AngularFireDatabase, public authService: AuthService) {
+    this.sService.headerCast.subscribe(r => this.current_turn = r);
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+
+    // if (this.currentGame && this.currentGame.moves) {
+    //   console.log(this.currentGame.moves);
+    // }
+  }
 
   selected(ev, value) {
     let target = ev.target.innerHTML;
     // check if square is already taken.
+    this.currentGame = this.sService.getCurrentGame();
+
     if (target === 'X' || target === 'O')
       return this.sService.setRule("space already taken");
 
-    // this.squareClicked.emit(value);
+    if (this.currentGame.turn !== this.authService.getUser().uid)
+      return this.sService.setRule("not your turn");
+
     this.previousBoard = this.sService.getPreviousBoard();
 
     if (this.previousBoard && !isMoveAllowed(value, this.previousBoard))
       return this.sService.setRule("can't send user back unless it's only option");
 
     this.sService.setRule("");
-    // // console.log("expected", this.expectedBoard);
-    //// console.log("selected", value.board);
 
     this.expectedBoard = this.sService.getExpectedBoard();
 
-    if (this.expectedBoard && this.expectedBoard !== value.board)
+    if (this.expectedBoard !== undefined && this.expectedBoard !== value.board)
       return;
 
-
-
     this.sService.setExpectedBoard(value.square);
+
     this.sService.setPreviousBoard(value.board);
 
-    addToTurnsList(value, this.current_turn);
+    addToTurnsList(value, this.currentGame.letter);
+
+    this.currentGame.turn = this.currentGame.opponent.uid;
+
+    [this.authService.getUser().uid, this.currentGame.opponent.uid]
+      .map(u => {
+        this.db.list(`gameslist/${u}`).update(this.currentGame.id, Object.assign({},
+          { moves: getBoards() },
+          { turn: this.currentGame.opponent.uid },
+          // this.currentGame,
+          { previousBoard: value.board },
+          { expectedBoard: value.square }
+      ));
+    });
+
 
     // check to see if player has won board
     if (hasWonBoard(value, this.current_turn)) {
       // check to see if player has won game
+      this.conquered = this.current_turn;
+
       this.hasWon = hasWonGame(this.current_turn);
       if (this.hasWon) {
-        this.player_has_won = `${this.current_turn} has won!`
+        // this.sService.updateHeader(`${this.current_turn} has won!`);
         return;
       }
 
     }
-    console.log(ev);
-    // this.removeClass(Array.from(ev.target.parentNode.children));
 
-    // this.addClass(Array.from(ev.target.parentNode.parentNode.children[0].children));
-
-
-
-    if (this.current_turn === 'O')
-      ev.target.innerHTML = 'O', this.sService.toggleTurn('X');
-    else
-      ev.target.innerHTML = 'X', this.sService.toggleTurn('O');
 
     if (isBoardFull(value)) {
       this.expectedBoard = undefined;
@@ -89,7 +106,7 @@ export class BoardComponent implements OnInit {
 
     this.squareClicked.emit(value);
 
-    this.sService.setExpectedBoard(value.square);
+    // this.sService.setExpectedBoard(value.square);
 
   }
 

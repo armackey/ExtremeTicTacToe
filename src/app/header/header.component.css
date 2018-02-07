@@ -1,6 +1,13 @@
 div {
   width: 100%;
   text-align: center;
-  margin: 25px 0px;
+  margin: 0px auto;
   font-size: 25px;
+}
+
+
+@media screen and (max-width: 580px) {
+  .header, .name {
+    font-size: 18px;
+  }
 }

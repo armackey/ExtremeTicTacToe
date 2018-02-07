@@ -6,6 +6,14 @@ interface UserSelected {
   board: number
 };
 
+export function setBoards(k, v): void {
+  boards[k] = v;
+}
+
+export function getBoards(): any {
+  return boards;
+}
+
 export function findAvailableBoards(): Array<any> {
   // first check what keys/boards exist
   return [0, 1, 2, 3, 4, 5, 6, 7, 8]
@@ -27,7 +35,7 @@ export function isMoveAllowed(data: UserSelected, previous_board: number): boole
   return true;
 }
 
-export function addToTurnsList(data: UserSelected, turn: string) {
+export function addToTurnsList(data: any, turn: string) {
 
   if (!boards[data.board]) boards[data.board.toString()] = [];
 

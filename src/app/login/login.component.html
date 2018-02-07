@@ -1,0 +1,42 @@
+
+
+
+<div class="form-container">
+
+  <form [formGroup]="rForm" (ngSubmit)="createUser(rForm.value)">
+
+    <label>
+      Username
+      <input type="text" formControlName="name">
+    </label>
+
+    <label>
+      Email
+      <input type="text" formControlName="email">
+    </label>
+
+    <div>
+      <label for="validate">can be fake. fake@fake.com works.</label>
+    </div>
+
+    <label>
+      Password
+      <input type="password" formControlName="password">
+    </label>
+
+    <!-- <label for="validate">must have at least 6 characters.</label> -->
+
+    <input type="submit" class="button expanded" value="submit" [disabled]="!rForm.valid">
+
+    <!-- <input type="submit" class="button expanded" value="login" [disabled]="!rForm.valid"> -->
+
+    <span class="alert" *ngIf="titleAlert">
+      {{ titleAlert }}
+    </span>
+
+  </form>
+
+</div>
+
+
+
